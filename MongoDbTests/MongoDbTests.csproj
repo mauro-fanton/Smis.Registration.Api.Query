@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -20,23 +20,20 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.7" />
-    <PackageReference Include="Smis.Registration.Persistence.Lib" Version="1.0.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Fixture\" />
+    <None Remove="Connection\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Fixture\" />
+    <Folder Include="Connection\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Smis.Registration.Api.Query\Smis.Registration.Api.Query.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Properties\launchSettings.json">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
+    <ProjectReference Include="..\MongoDb\MongoDb.csproj" />
   </ItemGroup>
 </Project>
