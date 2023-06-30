@@ -1,9 +1,8 @@
-﻿using System;
-using Mongo.Migration.Documents;
+﻿using Mongo.Migration.Documents;
 
 namespace MongoDbTests.Models
 {
-	public class TestModel: IDocument
+    public class TestModel
 	{
 
 		public TestModel(string name, DateTime dob, string occupation)

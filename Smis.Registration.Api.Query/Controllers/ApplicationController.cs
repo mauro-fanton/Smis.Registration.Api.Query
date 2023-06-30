@@ -26,7 +26,16 @@ public class ApplicationController : ControllerBase
     [Route("applications")]
     public IEnumerable<Application> Get()
     {
-        return _service.GetApplications();
+        try
+        {
+            return _service.GetApplications();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retriving all documents");
+            throw;
+        }
+
     }
 }
 

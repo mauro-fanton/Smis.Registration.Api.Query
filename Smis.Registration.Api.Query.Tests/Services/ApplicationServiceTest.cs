@@ -1,4 +1,5 @@
-﻿using MongoDb.Repository;
+﻿using Microsoft.Extensions.Logging;
+using MongoDb.Repository;
 using Moq;
 using Smis.Registration.Api.Query.Services;
 using Smis.Registration.Persistence.Lib;
@@ -7,13 +8,14 @@ namespace Smis.Registration.Api.Query.Tests.Services
 {
     public class ApplicationServiceTest
 	{
-        Mock<IMongoDbRepository<Application>> repo;
-        ApplicationService service;
+        private Mock<IMongoDbRepository<Application>> repo;
+        private Mock<ILogger<ApplicationService>> logger = new Mock<ILogger<ApplicationService>>();
+        private ApplicationService service;
 
         public ApplicationServiceTest()
 		{
             repo = new Mock<IMongoDbRepository<Application>>();
-            service = new ApplicationService(repo.Object);
+            service = new ApplicationService(logger.Object, repo.Object);
         }
 
 		[Fact]
@@ -42,25 +44,25 @@ namespace Smis.Registration.Api.Query.Tests.Services
 
         private Application CreateApplication()
         {
-            var address = new Address(
-                "109",
-                "England Avenue",
-                string.Empty,
-                string.Empty,
-                "NE8 1QR"
-            );
+            var address = new Address
+            {
+                AddressLine1 = "109",
+                AddressLine2 = "England Avenue",              
+                PostCode = "NE8 1QR"
+            };
 
-            return new Application(
-                "Mauro",
-                "Watson",
-                DateTime.Parse("2022-01-01"),
-                "123",
-                "Master",
-                address,
-                "Maria",
-                "Watson",
-                "01912345678"
-            );
+            return new Application()
+            {
+                FirstName = "Mauro",
+                Surname = "Watson",
+                DateOfBirthday = DateTime.Parse("2022-01-01"),
+                ApplicationNumber = "123",
+                Title = "Master",
+                ContactAddress = address,
+                PrimaryGuardianName = "Maria",
+                PrimaryGuardianSurname = "Watson",
+                PrimaryGuardianTelephone = "01912345678"
+            };
         }
     }
 }

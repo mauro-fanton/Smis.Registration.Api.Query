@@ -62,7 +62,6 @@ public class ApplicationControllerTests : IClassFixture<CustomWebApplicationFact
     [Fact]
     public async Task ItShouldReturnInternalSerberError()
     {
-
         _factory._repository.Setup(r => r.GetDocuments(Moq.It.IsAny<string>())).Throws<Exception>();
 
         var response = await _client.GetAsync("");
@@ -72,25 +71,25 @@ public class ApplicationControllerTests : IClassFixture<CustomWebApplicationFact
 
     private Application CreateApplication()
     {
-        var address = new Address(
-            "109",
-            "England Avenue",
-            string.Empty,
-            string.Empty,
-            "NE8 1QR"
-        );
+        var address = new Address
+        {
+            AddressLine1 = "109",
+            AddressLine2 = "England Avenue",
+            PostCode = "NE8 1QR"
+        };
 
-        return new Application(
-            "Mauro",
-            "Watson",
-            DateTime.Parse("2022-01-01"),
-            "123",
-            "Master",
-            address,
-            "Maria",
-            "Watson",
-            "01912345678"
-        );
+        return new Application()
+        {
+            FirstName = "Mauro",
+            Surname = "Watson",
+            DateOfBirthday = DateTime.Parse("2022-01-01"),
+            ApplicationNumber = "123",
+            Title = "Master",
+            ContactAddress = address,
+            PrimaryGuardianName = "Maria",
+            PrimaryGuardianSurname = "Watson",
+            PrimaryGuardianTelephone = "01912345678"
+        };
     }
 
     

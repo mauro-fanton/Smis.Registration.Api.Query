@@ -2,12 +2,11 @@
 using MongoDb.Repository;
 using MongoDB.Driver;
 using MongoDbTests.Models;
-using MongoDB.Driver.Linq;
 using Moq;
 
 namespace MongoDbTests.Connection
 {
-	public class MongoDbRepositoryTests { 
+    public class MongoDbRepositoryTests { 
 
 
         private Mock<IMongoCollection<TestModel>> collection;

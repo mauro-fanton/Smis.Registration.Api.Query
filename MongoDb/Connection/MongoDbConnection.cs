@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MongoDb.Connection
 {
-	public class MongoDBConnection: IMongoDbConnection
+    public class MongoDBConnection: IMongoDbConnection
 	{
 		private readonly MongoClient client;
 		private readonly string database;
@@ -20,7 +18,7 @@ namespace MongoDb.Connection
 
 		public IMongoCollection<Document> GetCollection<Document>(string collectioName)
 		{
-			return client.GetDatabase("").GetCollection<Document>(collectioName);
+			return client.GetDatabase(database).GetCollection<Document>(collectioName);
         }
     }	
 }

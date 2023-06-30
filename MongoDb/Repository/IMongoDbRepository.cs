@@ -1,7 +1,6 @@
-﻿using System;
-namespace MongoDb.Repository
+﻿namespace MongoDb.Repository
 {
-	public interface IMongoDbRepository<TDocument> where TDocument : class
+    public interface IMongoDbRepository<TDocument> where TDocument : class
     {
         List<TDocument> GetDocuments(string collectionName);
 
