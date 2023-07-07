@@ -34,10 +34,7 @@ namespace MongoDbTests.Connection
 
 			var res = repo.GetDocuments("collectionName");
 
-      Assert.Fail("fails");
 			connection.Verify(c => c.GetCollection<TestModel>("collectionName"));
-
-
 		}
 	}
 }
