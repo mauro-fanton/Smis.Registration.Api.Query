@@ -1,4 +1,5 @@
-﻿using MongoDb.Connection;
+﻿using System.Reflection;
+using MongoDb.Connection;
 using MongoDb.Repository;
 using MongoDB.Driver;
 using MongoDbTests.Models;
@@ -9,7 +10,7 @@ namespace MongoDbTests.Connection
     public class MongoDbRepositoryTests { 
 
 
-        private Mock<IMongoCollection<TestModel>> collection;
+    private Mock<IMongoCollection<TestModel>> collection;
 		private Mock<IMongoDbConnection> connection;
 		private Mock<IQuery<TestModel>> query;
 		private MongoDbRepository<TestModel> repo;
@@ -33,6 +34,7 @@ namespace MongoDbTests.Connection
 
 			var res = repo.GetDocuments("collectionName");
 
+      Assert.Fail("fails");
 			connection.Verify(c => c.GetCollection<TestModel>("collectionName"));
 
 

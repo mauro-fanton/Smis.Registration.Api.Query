@@ -1,0 +1,46 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+    {
+      "type": "dotnet",
+      "task": "build",
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "label": "dotnet: build"
+    },
+    {
+      "label": "clean",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "clean",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+          "test",          
+          "${workspaceFolder}/Smis.Registration.Api.Query.sln"
+      ],
+      "group": "test",
+      "problemMatcher": "$msCompile",
+      "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared",
+          "showReuseMessage": true,
+          "clear": false
+      }
+    }
+  ]
+}
