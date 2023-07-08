@@ -1,46 +1,71 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-    {
-      "type": "dotnet",
-      "task": "build",
-      "problemMatcher": [
-        "$msCompile"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "build",
+          "command": "dotnet",
+          "type": "process",
+          "args": [
+              "build",
+              "${workspaceFolder}/Smis.Registration.Api.QueryebApp.sln",
+              "/property:GenerateFullPaths=true",
+              "/consoleloggerparameters:NoSummary"
+          ],
+          "problemMatcher": "$msCompile"
       },
-      "label": "dotnet: build"
-    },
-    {
-      "label": "clean",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "clean",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "test",
-      "command": "dotnet",
-      "type": "shell",
-      "args": [
-          "test",          
-          "${workspaceFolder}/Smis.Registration.Api.Query.sln"
-      ],
-      "group": "test",
-      "problemMatcher": "$msCompile",
-      "presentation": {
-          "echo": true,
-          "reveal": "always",
-          "focus": false,
-          "panel": "shared",
-          "showReuseMessage": true,
-          "clear": false
+      {
+          "label": "publish",
+          "command": "dotnet",
+          "type": "process",
+          "args": [
+              "publish",
+              "${workspaceFolder}/Smis.Registration.Api.Query/Smis.Registration.Api.Query.csproj",
+              "/property:GenerateFullPaths=true",
+              "/consoleloggerparameters:NoSummary"
+          ],
+          "problemMatcher": "$msCompile"
+      },
+      {
+          "label": "watch",
+          "command": "dotnet",
+          "type": "process",
+          "args": [
+              "watch",
+              "run",
+              "${workspaceFolder}/Smis.Registration.Api.Query/Smis.Registration.Api.Query.csproj",
+              "/property:GenerateFullPaths=true",
+              "/consoleloggerparameters:NoSummary"
+          ],
+          "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "clean",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "clean",
+          "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "test",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+            "test",          
+            "${workspaceFolder}/Smis.Registration.Api.Query.sln"
+        ],
+        "group": "test",
+        "problemMatcher": "$msCompile",
+        "presentation": {
+            "echo": true,
+            "reveal": "always",
+            "focus": false,
+            "panel": "shared",
+            "showReuseMessage": true,
+            "clear": false
+        }
       }
-    }
   ]
 }
