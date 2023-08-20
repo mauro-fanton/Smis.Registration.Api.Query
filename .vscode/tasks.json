@@ -7,7 +7,7 @@
           "type": "process",
           "args": [
               "build",
-              "${workspaceFolder}/Smis.Registration.Api.QueryebApp.sln",
+              "${workspaceFolder}/Smis.Registration.Api.Query.sln",
               "/property:GenerateFullPaths=true",
               "/consoleloggerparameters:NoSummary"
           ],

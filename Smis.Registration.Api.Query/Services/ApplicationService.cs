@@ -1,5 +1,9 @@
-﻿using MongoDb.Repository;
+﻿using System.Net;
+using MongoDb.Repository;
+using MongoDB.Driver;
+using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Persistence.Lib;
+
 
 namespace Smis.Registration.Api.Query.Services
 {
@@ -14,9 +18,26 @@ namespace Smis.Registration.Api.Query.Services
             _repository = repository;
         }
 
-        public IEnumerable<Application> GetApplications()
+        public async Task<IEnumerable<Application>> GetApplications()
         {
-            return _repository.GetDocuments(Application.TableName);
+            return await _repository.GetDocuments(Application.TableName);
+        }
+
+        public async Task<Application> GetApplication(string applicationNumber)
+        {
+            Application? application = await _repository.GetDocument(Application.TableName, Builders<Application>.Filter.Eq(e => e.ApplicationNumber, applicationNumber));
+
+            if (application is null)
+            {
+                ThrowNotFoundException(applicationNumber);
+            }
+            return application!;
+        }
+
+        private void ThrowNotFoundException(string applicationNumber)
+        {            
+            _logger.LogError($"Application {applicationNumber} could not be found");
+            throw new ApplicationNotFoundException($"Application {applicationNumber} could not be found.");
         }
     }
 }

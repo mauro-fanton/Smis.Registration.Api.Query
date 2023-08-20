@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using MongoDb.Repository;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
 using Moq;
+using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Api.Query.Services;
 using Smis.Registration.Persistence.Lib;
 
@@ -19,28 +22,74 @@ namespace Smis.Registration.Api.Query.Tests.Services
         }
 
 		[Fact]
-		public void GetApplication_shouldCallTheRepository()
+		public async Task  GetApplications_shouldCallTheRepository()
 		{
-			repo.Setup(r => r.GetDocuments(It.IsAny<string>())).Returns(new List<Application>());	
+			repo.Setup(r => r.GetDocuments(It.IsAny<string>())).Returns(Task.FromResult(new List<Application>()));	
 
-            service.GetApplications();
+            await service.GetApplications();
 
-			repo.Verify(r => r.GetDocuments(Application.TableName));
+			repo.Verify(r => r.GetDocuments(It.Is<string>(a => a.Equals(Application.TableName))));
 			
 		}
 
         [Fact]
-        public void GetApplication_shouldReturnAListOfApplication()
+        public async Task GetApplications_shouldReturnAListOfApplication()
         {
             var applications = new List<Application>() { CreateApplication() };
             
-            repo.Setup(r => r.GetDocuments(It.IsAny<string>())).Returns(applications);
+            repo.Setup(r => r.GetDocuments(It.IsAny<string>())).Returns(Task.FromResult(applications));
 
-            Assert.Equal(applications, service.GetApplications());
+            var actual = await service.GetApplications();
+
+            Assert.Equal(applications, actual);
 
         }
 
-      
+        [Fact]
+        public async Task GetApplication_shouldReturnAnApplicationForApplicationNumber()
+        {
+            var application = CreateApplication();
+
+            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<FilterDefinition<Application>>())).Returns(Task.FromResult<Application?>(application));
+
+            var actual = await service.GetApplication("123");
+
+            Assert.Equal(application, actual);
+        }
+
+        [Fact]
+        public async Task GetApplication_ShouldUseAnEqualityFilterOnApplicationNumber()
+        {
+            var application = CreateApplication();
+
+            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<FilterDefinition<Application>>())).Returns(Task.FromResult<Application?>(application));
+
+            await service.GetApplication("123");
+
+            verifyGetDocument();
+        }
+
+        [Fact]
+        public async Task GetApplication_ReturnNotFoundException()
+        {
+            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<FilterDefinition<Application>>()))
+                .Returns(Task.FromResult<Application?>(null));
+
+            await  Assert.ThrowsAsync<ApplicationNotFoundException>(() => service.GetApplication("123"));            
+        }
+
+        private void verifyGetDocument()
+        {
+            var serializerRegistry = BsonSerializer.SerializerRegistry;
+            var documentSerializer = serializerRegistry.GetSerializer<Application>();
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationNumber, "123");
+
+            repo.Verify(r => r.GetDocument(
+                It.Is<string>(s => s.Equals(Application.TableName)),
+                It.Is<FilterDefinition<Application>>(f =>
+                f.Render(documentSerializer, serializerRegistry) == filter.Render(documentSerializer, serializerRegistry)))
+            );
+        }
 
         private Application CreateApplication()
         {

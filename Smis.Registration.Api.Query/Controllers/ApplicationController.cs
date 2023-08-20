@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Api.Query.Services;
 using Smis.Registration.Persistence.Lib;
+
+
 
 namespace Smis.Registration.Api.Query.Controllers;
 
 [ApiController]
 [Route("api/smis")]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 public class ApplicationController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<ApplicationController> _logger;
     private readonly IApplicationService _service;
 
@@ -22,18 +24,54 @@ public class ApplicationController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Get all resgitered applicationa
+    /// </summary>
+    /// <returns> A list of Application</returns>
+    /// <response code="200"> Returns a list of Application </response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType]
     [HttpGet]
     [Route("applications")]
-    public IEnumerable<Application> Get()
+    public async Task<ActionResult<List<Application>>> Get()
     {
         try
         {
-            return _service.GetApplications();
+            var applications = await _service.GetApplications();
+            return applications.ToList();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retriving all documents");
-            throw;
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get a resgitered application with application number
+    /// </summary>
+    /// <returns> A Registered Application</returns>
+    /// <response code="200"> Returns a registered application </response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    [HttpGet]
+    [Route("application/{applicationNumber}")]
+    public async Task<ActionResult<Application>> Get(string applicationNumber)
+    {
+        try
+        {
+            return await _service.GetApplication(applicationNumber); 
+        }
+        catch(ApplicationNotFoundException ex)
+        {
+            _logger.LogError($"Application {applicationNumber} not found", ex);
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error retriving application: {applicationNumber}");
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
 
     }

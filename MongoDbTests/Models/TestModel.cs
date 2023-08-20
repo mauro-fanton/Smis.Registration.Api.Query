@@ -1,4 +1,4 @@
-﻿using Mongo.Migration.Documents;
+﻿    using Mongo.Migration.Documents;
 
 namespace MongoDbTests.Models
 {

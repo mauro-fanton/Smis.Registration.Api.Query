@@ -1,25 +1,31 @@
 ﻿using MongoDb.Connection;
 using MongoDB.Driver;
+using Smis.Registration.Persistence.Lib;
 
 namespace MongoDb.Repository
 {
     public class MongoDbRepository<TDocument> : IMongoDbRepository<TDocument> where TDocument: class
     {
-        private readonly IMongoDbConnection connection;
-        private readonly IQuery<TDocument> query;
+        private readonly IMongoDbConnection _connection;
 
-        public MongoDbRepository(IMongoDbConnection Connection, IQuery<TDocument> query)
-		{
-            connection = Connection;
-            this.query = query;
+        public MongoDbRepository(IMongoDbConnection connection)
+        {
+            _connection = connection;
         }
 
-		public List<TDocument> GetDocuments(string collectionName)
+		public async Task<List<TDocument>> GetDocuments(string collectionName)
 		{
-			var db = connection.GetCollection<TDocument>(collectionName);
+			var db = _connection.GetCollection<TDocument>(collectionName);
 
-			return query.Select(db).ToList();
+            return await db.Aggregate().ToListAsync();
         }
-	}
+
+        public async Task<TDocument?> GetDocument(string collectionName, FilterDefinition<TDocument> filter)
+        {
+            var db = _connection.GetCollection<TDocument>(collectionName);
+
+            return await db.Find(filter).SingleOrDefaultAsync();
+        }
+    }
 }
 

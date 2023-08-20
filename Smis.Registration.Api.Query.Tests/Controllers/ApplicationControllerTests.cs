@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Smis.Registration.Api.Query.Controllers;
 using Smis.Registration.Api.Query.Services;
@@ -21,13 +24,28 @@ namespace Smis.Registration.Api.Query.Tests.Controllers
         }
 
 		[Fact]
-		public void Get_ShouldreturnOK()
+		public async Task Get_ShouldreturnAListOfApplication()
 		{
             var applications = new List<Application>() { CreateApplication() };
-            service.Setup(s => s.GetApplications()).Returns(applications);
+            service.Setup(s => s.GetApplications()).Returns(Task.FromResult(applications.AsEnumerable()));
 
-            Assert.Equal(applications, sut.Get());
+            var actual = await sut.Get();
+            
+            Assert.Equal(applications, actual.Value);
+        }
 
+        [Fact]
+        public async Task Get_ShouldreturnAnError()
+        {
+            var applications = new List<Application>() { CreateApplication() };
+            service.Setup(s => s.GetApplications()).Throws(new InvalidOperationException("Error message"));
+
+            var actual = await sut.Get();
+
+            var result = actual.Result as ObjectResult;
+
+            Assert.Equal(StatusCodes.Status500InternalServerError, result?.StatusCode);
+            Assert.Equal("Error message", result?.Value);
         }
 
         private Application CreateApplication()
