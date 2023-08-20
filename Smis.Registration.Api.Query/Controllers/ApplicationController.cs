@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Api.Query.Services;
 using Smis.Registration.Persistence.Lib;
