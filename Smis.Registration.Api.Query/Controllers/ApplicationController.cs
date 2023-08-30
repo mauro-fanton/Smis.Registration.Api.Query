@@ -7,6 +7,7 @@ using Smis.Registration.Persistence.Lib;
 
 namespace Smis.Registration.Api.Query.Controllers;
 
+[Produces("application/json")]
 [ApiController]
 [Route("api/smis")]
 [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -28,6 +29,7 @@ public class ApplicationController : ControllerBase
     /// </summary>
     /// <returns> A list of Application</returns>
     /// <response code="200"> Returns a list of Application </response>
+    [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     [HttpGet]
