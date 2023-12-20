@@ -1,6 +1,5 @@
 ﻿using MongoDb.Connection;
 using MongoDB.Driver;
-using Smis.Registration.Persistence.Lib;
 
 namespace MongoDb.Repository
 {
