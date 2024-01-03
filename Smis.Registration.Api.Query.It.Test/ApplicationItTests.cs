@@ -2,11 +2,12 @@
 using System.Net;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using Smis.Registration.Api.Query.It.Test.Fixture;
+using Smis.Registration.Api.Query.Integration.Test.Fixture;
 using Smis.Registration.Persistence.Lib;
+using Moq;
 
 
-namespace Smis.Registration.Api.Query.It.Test;
+namespace Smis.Registration.Api.Query.Integration.Test;
 
 public class ApplicationItTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
@@ -71,7 +72,7 @@ public class ApplicationItTests : IClassFixture<CustomWebApplicationFactory<Prog
     public async Task ItSHouldRetrieveOneApplicationWithApplicationNumber()
     {
         var applications = CreateApplication();
-        _factory._repository.Setup(r => r.GetDocument(Moq.It.IsAny<string>(), Moq.It.IsAny<FilterDefinition<Application>>())).Returns(Task.FromResult<Application?>(applications));
+        _factory._repository.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<Application?>(applications));
 
         var response = await _client.GetAsync($"{GET_APPLIACTION}/{Guid.NewGuid}");
 
@@ -84,7 +85,7 @@ public class ApplicationItTests : IClassFixture<CustomWebApplicationFactory<Prog
     [Fact]
     public async Task ItShouldReturnAnErrorWhenApplicationNotFound()
     {
-        _factory._repository.Setup(r => r.GetDocument(Moq.It.IsAny<string>(), Moq.It.IsAny<FilterDefinition<Application>>()))
+        _factory._repository.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.FromResult<Application?>(null));
 
         var response = await _client.GetAsync($"{GET_APPLIACTION}/{Guid.NewGuid}");
@@ -95,7 +96,7 @@ public class ApplicationItTests : IClassFixture<CustomWebApplicationFactory<Prog
     [Fact]
     public async Task ItShouldReturnAnError()
     { 
-        _factory._repository.Setup(r => r.GetDocument(Moq.It.IsAny<string>(), Moq.It.IsAny<FilterDefinition<Application>>())).Throws<Exception>();
+        _factory._repository.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
 
         var response = await _client.GetAsync($"{GET_APPLIACTION}/{Guid.NewGuid}");
 

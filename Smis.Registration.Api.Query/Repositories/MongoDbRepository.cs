@@ -1,9 +1,11 @@
-﻿using MongoDb.Connection;
+﻿
 using MongoDB.Driver;
+using Smis.MongoDb.Lib.Connection;
+using Smis.MongoDb.Lib.Repositories;
 
-namespace MongoDb.Repository
+namespace Smis.Registration.Api.Query.Repositories
 {
-    public class MongoDbRepository<TDocument> : IMongoDbRepository<TDocument> where TDocument: class
+    public class MongoDbRepository<TDocument> : IMongoReadRepository<TDocument> where TDocument: class
     {
         private readonly IMongoDbConnection _connection;
 
@@ -24,6 +26,14 @@ namespace MongoDb.Repository
             var db = _connection.GetCollection<TDocument>(collectionName);
 
             return await db.Find(filter).SingleOrDefaultAsync();
+        }
+
+        public async Task<TDocument?> GetDocument(string collectionName, string applicationNumber)
+        {
+            var db = _connection.GetCollection<TDocument>(collectionName);
+
+            var filterByApplicationNumber = Builders<TDocument>.Filter.Eq("applicationNumber", applicationNumber);
+            return await GetDocument(collectionName, filterByApplicationNumber);
         }
     }
 }

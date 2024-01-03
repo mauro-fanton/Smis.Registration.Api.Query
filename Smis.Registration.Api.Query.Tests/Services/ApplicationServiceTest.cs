@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using MongoDb.Repository;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Moq;
+using Smis.MongoDb.Lib.Repositories;
 using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Api.Query.Services;
 using Smis.Registration.Persistence.Lib;
@@ -11,13 +11,13 @@ namespace Smis.Registration.Api.Query.Tests.Services
 {
     public class ApplicationServiceTest
 	{
-        private Mock<IMongoDbRepository<Application>> repo;
+        private Mock<IMongoReadRepository<Application>> repo;
         private Mock<ILogger<ApplicationService>> logger = new Mock<ILogger<ApplicationService>>();
         private ApplicationService service;
 
         public ApplicationServiceTest()
 		{
-            repo = new Mock<IMongoDbRepository<Application>>();
+            repo = new Mock<IMongoReadRepository<Application>>();
             service = new ApplicationService(logger.Object, repo.Object);
         }
 
@@ -50,7 +50,8 @@ namespace Smis.Registration.Api.Query.Tests.Services
         {
             var application = CreateApplication();
 
-            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<FilterDefinition<Application>>())).Returns(Task.FromResult<Application?>(application));
+            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<Application?>(application));
 
             var actual = await service.GetApplication("123");
 
@@ -62,7 +63,8 @@ namespace Smis.Registration.Api.Query.Tests.Services
         {
             var application = CreateApplication();
 
-            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<FilterDefinition<Application>>())).Returns(Task.FromResult<Application?>(application));
+            repo.Setup(r => r.GetDocument(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<Application?>(application));
 
             await service.GetApplication("123");
 
@@ -86,8 +88,7 @@ namespace Smis.Registration.Api.Query.Tests.Services
 
             repo.Verify(r => r.GetDocument(
                 It.Is<string>(s => s.Equals(Application.TableName)),
-                It.Is<FilterDefinition<Application>>(f =>
-                f.Render(documentSerializer, serializerRegistry) == filter.Render(documentSerializer, serializerRegistry)))
+                It.Is<string>(f => f.Equals("123")))
             );
         }
 

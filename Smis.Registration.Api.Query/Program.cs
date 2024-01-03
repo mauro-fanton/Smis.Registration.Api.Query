@@ -1,7 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using MongoDb.Connection;
-using MongoDb.Repository;
+using Smis.MongoDb.Lib.Connection;
+using Smis.MongoDb.Lib.Repositories;
+using Smis.Registration.Api.Query.Repositories;
 using Smis.Registration.Api.Query.Services;
 using System.Reflection;
 
@@ -13,9 +14,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IMongoDbConnection, MongoDBConnection>();
+builder.Services.AddSingleton<IMongoDbConnection, MongoDbConnection>();
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
-builder.Services.AddTransient(typeof(IMongoDbRepository<>), typeof(MongoDbRepository<>));
+builder.Services.AddTransient(typeof(IMongoReadRepository<>), typeof(MongoDbRepository<>));
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.InvalidModelStateResponseFactory = actionContext =>
     {

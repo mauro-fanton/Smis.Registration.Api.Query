@@ -9,6 +9,7 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Smis.Registration.Api.Query.It.Test' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="xunit" Version="2.6.4" />
@@ -22,14 +23,17 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.7" />
     <PackageReference Include="Moq" Version="4.20.70" />
-    <PackageReference Include="Smis.Registration.Persistence.Lib" Version="1.0.4" />
+    <PackageReference Include="Smis.Registration.Persistence.Lib" Version="1.0.13" />
+    <PackageReference Include="Smis.MongoDb.Test.Lib" Version="0.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Fixture\" />
+    <None Remove="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Fixture\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Smis.Registration.Api.Query\Smis.Registration.Api.Query.csproj" />

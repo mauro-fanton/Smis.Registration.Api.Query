@@ -1,6 +1,5 @@
-﻿using System.Net;
-using MongoDb.Repository;
-using MongoDB.Driver;
+﻿
+using Smis.MongoDb.Lib.Repositories;
 using Smis.Registration.Api.Query.ErrorHandler;
 using Smis.Registration.Persistence.Lib;
 
@@ -10,9 +9,9 @@ namespace Smis.Registration.Api.Query.Services
     public class ApplicationService : IApplicationService
 	{
         private readonly ILogger<ApplicationService> _logger;
-        private readonly IMongoDbRepository<Application> _repository;
+        private readonly IMongoReadRepository<Application> _repository;
 
-        public ApplicationService(ILogger<ApplicationService> logger, IMongoDbRepository<Application> repository)
+        public ApplicationService(ILogger<ApplicationService> logger, IMongoReadRepository<Application> repository)
 		{
             _logger = logger;
             _repository = repository;
@@ -25,7 +24,7 @@ namespace Smis.Registration.Api.Query.Services
 
         public async Task<Application> GetApplication(string applicationNumber)
         {
-            Application? application = await _repository.GetDocument(Application.TableName, Builders<Application>.Filter.Eq(e => e.ApplicationNumber, applicationNumber));
+            Application? application = await _repository.GetDocument(Application.TableName, applicationNumber);
 
             if (application is null)
             {
